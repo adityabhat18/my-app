@@ -16,8 +16,8 @@ stages:
     - checkout: self
     - script: |
         export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-        echo "JAVA_HOME=$JAVA_HOME" >> $BASH_ENV
-        source $BASH_ENV
+        echo "JAVA_HOME=$JAVA_HOME" >> env
+        source env
         java -version
       displayName: 'Set JAVA_HOME manually'
     - task: Maven@3
