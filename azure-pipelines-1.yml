@@ -24,7 +24,7 @@ stages:
         options: '-DskipTests'  # Add this if you want to skip tests
         mavenOptions: '-Xmx1024m'
         javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '11.0.26'  # Or your required JDK version
+        jdkVersionOption: '21.0.6'  # Or your required JDK version
         publishJUnitResults: false
         testResultsFiles: '**/surefire-reports/TEST-*.xml'
     - task: PublishBuildArtifacts@1
