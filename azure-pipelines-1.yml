@@ -20,8 +20,8 @@ stages:
       displayName: 'Set JAVA_HOME manually'
     - task: Maven@3
       inputs:
-        javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '11.0.26'  # Or your required JDK version
+        javaHomeOption: 'Path'
+        jdkDirectory: '/usr/lib/jvm/java-11-openjdk-amd64'  # Or the actual path on your self-hosted agent
         mavenPomFile: 'pom.xml'
         goals: 'clean package'
         options: '-DskipTests'  # Add this if you want to skip tests
