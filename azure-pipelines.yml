@@ -1,12 +1,16 @@
 trigger:
 - main  # Change to your default branch
 
+pool:
+  name: test-vm-01-agent
+
 stages:
 - stage: Build
   displayName: 'Build Mule Application'
   jobs:
   - job: BuildMuleApp
     pool:
+      name: test-vm-01-agent
       vmImage: 'ubuntu-latest'
     steps:
     - checkout: self
