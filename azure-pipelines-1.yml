@@ -15,9 +15,7 @@ stages:
     steps:
     - checkout: self
     - script: |
-        export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-        echo "JAVA_HOME=$JAVA_HOME" >> /etc/profile
-        source /etc/profile
+        
         java -version
       displayName: 'Set JAVA_HOME manually'
     - task: Maven@3
