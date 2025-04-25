@@ -1,7 +1,9 @@
 trigger:
 - main  # Change to your default branch
+
 pool:
   name: test-vm-01-agent
+
 stages:
 - stage: Build
   displayName: 'Build Mule Application'
@@ -12,6 +14,14 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - checkout: self
+    - task: JavaToolInstaller@0
+      inputs:
+        versionSpec: '11'
+        jdkArchitectureOption: 'x64'
+        jdkSourceOption: 'PreInstalled'
+    - script: |
+        echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_11_X64)"
+        echo "##vso[task.setvariable variable=PATH]$(JAVA_HOME_11_X64)/bin;$(PATH)"
     - task: Maven@3
       inputs:
         mavenPomFile: 'pom.xml'
@@ -27,6 +37,7 @@ stages:
         PathtoPublish: 'target'  # This is where the mule.jar will be
         ArtifactName: 'mule-jar'
         publishLocation: 'Container'
+
 - stage: Deploy
   displayName: 'Deploy to Azure VM'
   dependsOn: Build
