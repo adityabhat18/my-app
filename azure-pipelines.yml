@@ -1,43 +1,45 @@
 trigger:
 - main  # Change to your default branch
+
 stages:
 - stage: Build
- displayName: 'Build Mule Application'
- jobs:
- - job: BuildMuleApp
-   pool:
-     vmImage: 'ubuntu-latest'
-   steps:
-   - checkout: self
-   - task: Maven@3
-     inputs:
-       mavenPomFile: 'pom.xml'
-       goals: 'clean package'
-       options: '-DskipTests'  # Add this if you want to skip tests
-       mavenOptions: '-Xmx1024m'
-       javaHomeOption: 'JDKVersion'
-       jdkVersionOption: '1.11'  # Or your required JDK version
-       publishJUnitResults: false
-       testResultsFiles: '**/surefire-reports/TEST-*.xml'
-   - task: PublishBuildArtifacts@1
-     inputs:
-       PathtoPublish: 'target'  # This is where the mule.jar will be
-       ArtifactName: 'mule-jar'
-       publishLocation: 'Container'
+  displayName: 'Build Mule Application'
+  jobs:
+  - job: BuildMuleApp
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - checkout: self
+    - task: Maven@3
+      inputs:
+        mavenPomFile: 'pom.xml'
+        goals: 'clean package'
+        options: '-DskipTests'  # Add this if you want to skip tests
+        mavenOptions: '-Xmx1024m'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.11'  # Or your required JDK version
+        publishJUnitResults: false
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: 'target'  # This is where the mule.jar will be
+        ArtifactName: 'mule-jar'
+        publishLocation: 'Container'
+
 - stage: Deploy
- displayName: 'Deploy to Azure VM'
- dependsOn: Build
- condition: succeeded()
- jobs:
- - job: DeployToVM
-   pool:
-     vmImage: 'ubuntu-latest'
-   steps:
-   - download: current
-     artifact: mule-jar
-   - task: CopyFilesOverSSH@0
-     inputs:
-       sshEndpoint: 'MyAzureVMServiceConnection'  # Replace with your SSH service connection name
-       sourceFolder: '$(Pipeline.Workspace)/mule-jar'
-       contents: '*.jar'
-       targetFolder: '/opt/app/deploy'
+  displayName: 'Deploy to Azure VM'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - job: DeployToVM
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - download: current
+      artifact: mule-jar
+    - task: CopyFilesOverSSH@0
+      inputs:
+        sshEndpoint: 'targetdeployment'  # Replace with your SSH service connection name
+        sourceFolder: '$(Pipeline.Workspace)/mule-jar'
+        contents: '*.jar'
+        targetFolder: '/home/azureuser'
